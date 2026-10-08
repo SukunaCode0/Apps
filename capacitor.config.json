@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.myapp",
+  "appName": "MyApp",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  }
+}
