@@ -29,12 +29,24 @@ jobs:
       - name: Install Capacitor
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
           mkdir -p www
           cp -r src/app/* www/
           npx cap init MyApp com.example.myapp --web-dir=www || true
           npx cap add android || true
           npx cap sync android
+
+      - name: Fix duplicate Kotlin stdlib classes
+        run: |
+          cat >> android/app/build.gradle <<'EOF'
+
+          // Old kotlin-stdlib-jdk7/jdk8 jars duplicate classes now inside kotlin-stdlib itself
+          configurations.all {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
+          tail -15 android/app/build.gradle
 
       - name: Build debug APK
         run: |
